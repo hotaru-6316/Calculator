@@ -6,7 +6,7 @@ import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import annotation.Initializable;
+import annotation.InitMethodRequired;
 import gui.view.btn.Button;
 
 /**
@@ -14,7 +14,7 @@ import gui.view.btn.Button;
  * このクラスでは、コンストラクタの内部でCalcWindowFrameのgetter等を実行すると、nullが返る可能性があります。<br>
  * 詳しくは{@link CalcWindowFrame}を確認してください。
  */
-@Initializable
+@InitMethodRequired
 final public class ButtonPanel extends AbstractPanel {
 	
 	/**

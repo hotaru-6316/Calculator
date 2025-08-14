@@ -8,7 +8,7 @@ import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import annotation.Initializable;
+import annotation.InitMethodRequired;
 import parse.LogicFormulaParser;
 import parse.Parser;
 import parse.SimpleFormulaParser;
@@ -17,7 +17,7 @@ import parse.SimpleFormulaParser;
  * 電卓ウィンドウを構築して表示するためのJFrameです。<br>
  * このクラスが使用するInputPanel等のクラスはこのクラスの準備が整う前にコンストラクタが実行されるため、<br>
  * それらのクラスはコンストラクタではなく、init()メソッドでこのクラスのメソッドにアクセスしてください。<br>
- * 対象のクラスには{@link Initializable}注釈が使用されています。
+ * 対象のクラスには{@link InitMethodRequired}注釈が使用されています。
  */
 final public class CalcWindowFrame extends JFrame {
 

@@ -5,7 +5,7 @@ import java.awt.Insets;
 
 import javax.swing.JTextField;
 
-import annotation.Initializable;
+import annotation.InitMethodRequired;
 import gui.doc.InputTextFieldDocument;
 
 /**
@@ -13,7 +13,7 @@ import gui.doc.InputTextFieldDocument;
  * このクラスでは、コンストラクタの内部でCalcWindowFrameのgetter等を実行すると、nullが返る可能性があります。<br>
  * 詳しくは{@link CalcWindowFrame}を確認してください。
  */
-@Initializable
+@InitMethodRequired
 final public class InputTextField extends JTextField {
 	
 	/**

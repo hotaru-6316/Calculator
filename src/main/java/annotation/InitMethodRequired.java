@@ -15,6 +15,6 @@ import gui.view.CalcWindowFrame;
  */
 @Retention(SOURCE)
 @Target(TYPE)
-public @interface Initializable {
+public @interface InitMethodRequired {
 
 }

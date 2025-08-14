@@ -6,14 +6,14 @@ import java.awt.LayoutManager;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import annotation.Initializable;
+import annotation.InitMethodRequired;
 
 /**
  * 電卓ウィンドウのBorderLayout.NORTHに配置する入力等を表示するためのJPanelです。<br>
  * このクラスでは、コンストラクタの内部でCalcWindowFrameのgetter等を実行すると、nullが返る可能性があります。<br>
  * 詳しくは{@link CalcWindowFrame}を確認してください。
  */
-@Initializable
+@InitMethodRequired
 final public class InputPanel extends AbstractPanel {
 	
 	/**
