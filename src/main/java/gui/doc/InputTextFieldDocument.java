@@ -2,6 +2,7 @@ package gui.doc;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 import javax.swing.text.AttributeSet;
@@ -10,8 +11,10 @@ import javax.swing.text.PlainDocument;
 
 import calc.Calculator;
 import gui.view.InputPanel;
+import history.HistoryDAO;
 import item.CalcResult;
 import item.FormulaItem;
+import item.History;
 import parse.ParseException;
 import parse.Parser;
 
@@ -172,6 +175,12 @@ public final class InputTextFieldDocument extends PlainDocument {
 		try {
 			CalcResult result = parser.parseAndCalc(item, calculator);
 			PANEL.getTextField().setText(BigDecimal.valueOf(result.get()).toPlainString());
+			try {
+				HistoryDAO.saveHistory(new History(-1, item, result, parser));
+			} catch (SQLException e) {
+				PANEL.getTextLabel().setText("(履歴に保存できませんでした) " + PANEL.getTextLabel().getText());
+				e.printStackTrace();
+			}
 		} catch (ParseException e) {
 			this.skipCheck = true;
 			PANEL.getTextField().setText("エラー!");

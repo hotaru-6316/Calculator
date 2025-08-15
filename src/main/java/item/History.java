@@ -2,7 +2,9 @@ package item;
 
 import java.util.Objects;
 
+import parse.LogicFormulaParser;
 import parse.Parser;
+import parse.SimpleFormulaParser;
 
 /**
  * 履歴情報の1エントリを保存するクラスです。
@@ -29,6 +31,19 @@ public record History(int id, FormulaItem formula, CalcResult result, Parser par
 			throw new IllegalArgumentException("idを-1より小さくすることはできません");
 		}
 		requireNotNull(formula, result, parser);
+	}
+
+	@Override
+	public String toString() {
+		String parserName;
+		if (parser instanceof SimpleFormulaParser) {
+			parserName = "通常電卓";
+		} else if (parser instanceof LogicFormulaParser) {
+			parserName = "四則計算電卓";
+		} else {
+			parserName = "不明";
+		}
+		return "[" + parserName + "] " + formula.get() + result.get();
 	}
 
 }

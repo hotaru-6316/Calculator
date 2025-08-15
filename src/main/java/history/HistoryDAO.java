@@ -3,6 +3,7 @@ package history;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import parse.SimpleFormulaParser;
 
 public class HistoryDAO {
 	
+	private static final int MAX_ENTRY = 20;
+
 	private static String dbDir = "./";
 	
 	private static final String TABLENAME = "history";
@@ -102,6 +105,18 @@ public class HistoryDAO {
 			}
 		} finally {
 			conn.close();
+		}
+		cleanHistory();
+	}
+	
+	private static void cleanHistory() throws SQLException {
+		List<History> histories = new ArrayList<>(Arrays.asList(getHistories())).reversed();
+		int count = 0;
+		for (History history : histories) {
+			count++;
+			if (count > MAX_ENTRY) {
+				removeHistory(history);
+			}
 		}
 	}
 	

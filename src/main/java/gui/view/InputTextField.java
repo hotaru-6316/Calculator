@@ -42,11 +42,7 @@ final public class InputTextField extends JTextField {
 		Font newFont = this.getFont().deriveFont(20F);
 		this.setFont(newFont);
 		this.addActionListener((e) -> {
-			Object obj = e.getSource();
-			if (!(obj instanceof InputTextField)) {
-				throw new IllegalArgumentException("このイベントが発生したオブジェクトがInputTextFieldではありません。");
-			}
-			InputTextField field = (InputTextField) obj;
+			InputTextField field = this;
 			String text = field.getText();
 			if (text.length() == 0) {
 				return;

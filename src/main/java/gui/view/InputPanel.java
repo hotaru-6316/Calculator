@@ -3,7 +3,9 @@ package gui.view;
 import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import annotation.InitMethodRequired;
@@ -30,6 +32,8 @@ final public class InputPanel extends AbstractPanel {
 	 * 数式を入力するためのテキストフィールド
 	 */
 	final private InputTextField TEXT_FIELD = new InputTextField(this);
+	
+	final private HistoryButton HISTORY_BUTTON;
 
 	/**
 	 * このクラスを初期化します。
@@ -37,7 +41,12 @@ final public class InputPanel extends AbstractPanel {
 	 */
 	InputPanel(CalcWindowFrame windowFrame) {
 		super(windowFrame, PANEL_LAYOUT);
-		this.add(TEXT_LABEL, BorderLayout.NORTH);
+		HISTORY_BUTTON = new HistoryButton(windowFrame, TEXT_FIELD);
+		JPanel labelPanel = new JPanel();
+		labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.X_AXIS));
+		labelPanel.add(HISTORY_BUTTON);
+		labelPanel.add(TEXT_LABEL);
+		this.add(labelPanel, BorderLayout.NORTH);
 		this.add(TEXT_FIELD, BorderLayout.SOUTH);
 	}
 

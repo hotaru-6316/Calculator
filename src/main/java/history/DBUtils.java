@@ -9,12 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 
-public class DBUtils {
+class DBUtils {
 	
 	@FunctionalInterface
 	public static interface ThrowableRunnable<P, T extends Throwable> {
@@ -26,8 +23,6 @@ public class DBUtils {
 	private static final String DRIVER_NAME = "org.h2.Driver";
 	
 	private static final String DRIVER_URL = "jdbc:h2:file:";
-	
-	private static final Map<String, Connection> CONNECTIONS = new HashMap<>();
 	
 	@Deprecated
 	private DBUtils() {}
@@ -47,32 +42,13 @@ public class DBUtils {
 					throw new IllegalStateException(dbname + "は初期化されていません");
 				}
 			}
-			if (CONNECTIONS.containsKey(dbname)) {
-				Connection conn = CONNECTIONS.get(dbname);
-				if (!conn.isClosed()) {
-					return conn;
-				}
-			}
 			Class.forName(DRIVER_NAME);
 			Connection conn = DriverManager.getConnection(DRIVER_URL + dbname);
-			CONNECTIONS.put(dbname, conn);
 			return conn;
 		} catch (ClassNotFoundException e) {
 			Error error = new NoClassDefFoundError();
 			error.initCause(e);
 			throw error;
-		}
-	}
-	
-	public static void closeDatabase(Connection conn) throws SQLException {
-		if (!conn.isClosed()) {
-			conn.close();
-		}
-		for (String dbname : new HashSet<>(CONNECTIONS.keySet())) {
-			if (CONNECTIONS.get(dbname) == conn) {
-				CONNECTIONS.remove(dbname);
-				break;
-			}
 		}
 	}
 
@@ -164,7 +140,7 @@ public class DBUtils {
 			}
 			throw e;
 		} finally {
-			closeDatabase(conn);
+			conn.close();
 		}
 	}
 

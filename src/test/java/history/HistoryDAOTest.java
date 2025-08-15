@@ -36,8 +36,17 @@ class HistoryDAOTest {
 	}
 	
 	@Test @Order(1)
+	void testMaxHistory() throws SQLException {
+		int maxEntry = (int) getFieldValue(HistoryDAO.class, null, "MAX_ENTRY");
+		for (int i = 0; i < 30; i++) {
+			assertDoesNotThrow(() -> HistoryDAO.saveHistory(new History(-1, new FormulaItem("12+1="), new CalcResult(13), SimpleFormulaParser.getParser())));
+		}
+		assertEquals(maxEntry, HistoryDAO.getHistories().length);
+	}
+	
+	@Test @Order(2)
 	void testSaveHistory() throws IOException, SQLException {
-		Files.delete(Path.of((String) getFieldValue(HistoryDAO.class, null, "dbDir"), ((String) getFieldValue(HistoryDAO.class, null, "TABLENAME")) + ".mv.db"));
+		Files.deleteIfExists(Path.of((String) getFieldValue(HistoryDAO.class, null, "dbDir"), ((String) getFieldValue(HistoryDAO.class, null, "TABLENAME")) + ".mv.db"));
 		for (History history : TEST_DATA) {
 			assertDoesNotThrow(() -> HistoryDAO.saveHistory(new History(-1, new FormulaItem("12+1="), new CalcResult(13), SimpleFormulaParser.getParser())));
 			assertDoesNotThrow(() -> HistoryDAO.saveHistory(history));
@@ -45,10 +54,10 @@ class HistoryDAOTest {
 		}
 	}
 
-	@Test @Order(2)
+	@Test @Order(3)
 	void testGetHistories() {
 		History[] histories = assertDoesNotThrow(HistoryDAO::getHistories);
-		assertEquals(histories.length, TEST_DATA.length);
+		assertEquals(TEST_DATA.length, histories.length);
 		for (History history : histories) {
 			int num = history.id() - 1;
 			History expected = TEST_DATA[num];
@@ -56,7 +65,7 @@ class HistoryDAOTest {
 		}
 	}
 	
-	@Test @Order(3)
+	@Test @Order(4)
 	void testRemoveHistory() throws SQLException {
 		History history = Stream.of(HistoryDAO.getHistories()).findAny().get();
 		assertDoesNotThrow(() -> HistoryDAO.removeHistory(history));
