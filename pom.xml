@@ -29,4 +29,44 @@
   		<scope>runtime</scope>
   	</dependency>
   </dependencies>
+  <build>
+  	<plugins>
+  		<!-- 依存関係を含むJarを生成する設定 -->
+  		<plugin>
+  			<artifactId>maven-assembly-plugin</artifactId>
+  			<version>3.7.1</version>
+  			<executions>
+  				<execution>
+  					<id>make-assembly</id>
+  					<phase>package</phase>
+  					<goals>
+  						<goal>single</goal>
+  					</goals>
+  				</execution>
+  			</executions>
+  			<configuration>
+  				<finalName>Calculator</finalName>
+  				<appendAssemblyId>false</appendAssemblyId>
+  				<descriptorRefs>
+  					<descriptorRef>jar-with-dependencies</descriptorRef>
+  				</descriptorRefs>
+  				<archive>
+  					<manifest><mainClass>run.Main</mainClass>
+  					</manifest>
+  				</archive>
+  			</configuration>
+  		</plugin>
+  		<!-- 依存関係を含まないJarを生成しない設定 -->
+  		<plugin>
+  			<artifactId>maven-jar-plugin</artifactId>
+  			<version>3.4.2</version>
+  			<executions>
+  				<execution>
+  					<id>default-jar</id>
+  					<phase>none</phase>
+  				</execution>
+  			</executions>
+  		</plugin>
+  	</plugins>
+  </build>
 </project>
