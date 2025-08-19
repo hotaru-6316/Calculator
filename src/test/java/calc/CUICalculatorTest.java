@@ -3,6 +3,7 @@ package calc;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
@@ -17,6 +18,19 @@ import util.ReflectionUtility;
  * CUI用の計算機クラスをテストします。
  */
 public class CUICalculatorTest extends CalculatorTest {
+	
+	private static class TestModeChanger implements Closeable {
+		
+		public TestModeChanger() {
+			ReflectionUtility.setFieldValue(CUICalculator.class, null, "scriptMode", true);
+		}
+
+		@Override
+		public void close() {
+			ReflectionUtility.setFieldValue(CUICalculator.class, null, "scriptMode", false);
+		}
+		
+	}
 
     /**
      * テストの準備を行います。
@@ -32,6 +46,43 @@ public class CUICalculatorTest extends CalculatorTest {
     
     @AfterEach public void テスト後処理() {
     	setScannerIsFieldUsingReflection(System.in);
+    }
+    
+    @Test
+    void スクリプトモードでの電卓画面の表示テスト() {
+    	// テスト準備
+    			try (
+    					TestModeChanger changer = new TestModeChanger();
+    	    			SystemOutErrWrapper outWrapper = new SystemOutErrWrapper(SystemOutErrWrapper.WrapperEnum.SYSTEM_OUT);
+    	    			SystemOutErrWrapper errWrapper = new SystemOutErrWrapper(SystemOutErrWrapper.WrapperEnum.SYSTEM_ERR);
+    	    	) {
+    				ByteArrayInputStream newIs = new ByteArrayInputStream((
+    						"12+2*4" + System.lineSeparator() +
+    						"change-mode" + System.lineSeparator() +
+    						"12+2*4" + System.lineSeparator() +
+    						"12t" + System.lineSeparator() + 
+    						"60+*90" + System.lineSeparator() +
+    						System.lineSeparator() +
+    						"9/0" + System.lineSeparator() +
+    						"exit" + System.lineSeparator()
+    				).getBytes());
+    	    		setScannerIsFieldUsingReflection(newIs);
+    	            new CUICalculator().display();
+    	            
+    	            assertEquals(
+    	            		"56.0" + System.lineSeparator() +
+    	            		"20.0" + System.lineSeparator() +
+    	            		"ERROR" + System.lineSeparator() +
+    	            		"ERROR" + System.lineSeparator() +
+    	            		"ERROR" + System.lineSeparator()
+    	            , outWrapper.getBuffer().toString());
+    	            
+    	            assertEquals(
+    	            		 "使用できない文字が含まれています" + System.lineSeparator() +
+    	            		 "入力された計算式が不正です。" + System.lineSeparator() +
+    	            		 "0で割ることは出来ません" + System.lineSeparator()
+    	            , errWrapper.getBuffer().toString());
+    			}
     }
     
     /**

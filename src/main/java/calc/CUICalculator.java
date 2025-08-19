@@ -30,6 +30,15 @@ final class CUICalculator implements Calculator {
 	 * JUnitテスト実行中にJVMが停止しないようにするために使います。
 	 */
 	private static boolean exitVM = true;
+	
+	/**
+	 * CUI電卓をスクリプト用に、最低限の出力にするか否かです。<br>
+	 * スクリプトや他のプログラムで実行する際に、答え以外の出力を行いません。<br>
+	 * 計算に成功した場合はSTDOUTに、計算結果のみ出力します。<br>
+	 * 失敗した場合は、STDOUTに<code>"ERROR"</code>、STDERRにエラーの情報を出力します。<br>
+	 * この機能はシステムプロパティ<code>calc.CUICalculator.scriptMode</code>が<code>true</code>である場合にのみ有効になります。
+	 */
+	private static boolean scriptMode = Boolean.getBoolean("calc.CUICalculator.scriptMode");
 
 	@Override
 	public String toString() {
@@ -39,19 +48,25 @@ final class CUICalculator implements Calculator {
 	@Override
 	public void display() {
 		Thread.setDefaultUncaughtExceptionHandler((th, e) -> {
-			System.err.println("電卓実行中に致命的なエラーが発生したため終了します。");
+			if (!scriptMode) {
+				System.err.println("電卓実行中に致命的なエラーが発生したため終了します。");
+			}
 			Calculator.printStackTrace(e);
 			if(exitVM) System.exit(1);
 		});
 		this.displayMessage();
 		Inputer inputer = new CUIInputer();
 		while (true) {
-			System.out.print("> ");
+			if (!scriptMode) {
+				System.out.print("> ");
+			}
 			String inputLine = inputer.getLine();
 			switch (inputLine) {
 				case "exit":
-					System.out.println("電卓を終了します。");
-					return;
+					if (!scriptMode) {
+						System.out.println("電卓を終了します。");
+					}
+				return;
 
 				case "change-mode":
 					this.changeParser();
@@ -66,7 +81,12 @@ final class CUICalculator implements Calculator {
 						CalcResult result = this.parser.parseAndCalc(item, this);
 						System.out.println(result.get());
 					} catch (ParseException e) {
-						System.err.println("計算中にエラーが発生しました: " + e.getCause().getLocalizedMessage());
+						if (!scriptMode) {
+							System.err.println("計算中にエラーが発生しました: " + e.getCause().getLocalizedMessage());
+						} else {
+							System.out.println("ERROR");
+							System.err.println(e.getCause().getLocalizedMessage());
+						}
 					}
 					break;
 			}
@@ -77,9 +97,13 @@ final class CUICalculator implements Calculator {
 	 * メッセージをコンソールに出力します
 	 */
 	private void displayMessage() {
-		System.out.println("数字(少数も含む)とこれらの記号+-*/を入力してEnterを押すと計算します。");
+		if (!scriptMode) {
+			System.out.println("数字(少数も含む)とこれらの記号+-*/を入力してEnterを押すと計算します。");
+		}
 		this.changeParser();
-		System.out.println("\"exit\"と入力すると電卓プログラムを終了します。");
+		if (!scriptMode) {
+			System.out.println("\"exit\"と入力すると電卓プログラムを終了します。");
+		}
 	}
 
 	/**
@@ -88,12 +112,18 @@ final class CUICalculator implements Calculator {
 	private void changeParser() {
 		if (this.parser instanceof SimpleFormulaParser) {
 			this.parser = LogicFormulaParser.getParser();
-			System.out.println("現在四則計算モードで動作しています。(掛け算や割り算を先に計算します)");
+			if (!scriptMode) {
+				System.out.println("現在四則計算モードで動作しています。(掛け算や割り算を先に計算します)");
+			}
 		} else {
 			this.parser = SimpleFormulaParser.getParser();
-			System.out.println("現在通常モードで動作しています。(掛け算や割り算に関係なく左から右に計算します)");
+			if (!scriptMode) {
+				System.out.println("現在通常モードで動作しています。(掛け算や割り算に関係なく左から右に計算します)");
+			}
 		}
-		System.out.println("モードを変更する場合は\"change-mode\"と入力してください。");
+		if (!scriptMode) {
+			System.out.println("モードを変更する場合は\"change-mode\"と入力してください。");
+		}
 	}
 
 }
