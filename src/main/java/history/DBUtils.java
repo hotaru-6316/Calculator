@@ -11,27 +11,68 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
+/**
+ * データベースへのアクセスを行います。
+ * このクラスのすべてのメソッドは、確保したリソースを終了時に自動で解放します。
+ * ({@link #createConnection(String, boolean)}を除く)
+ */
 class DBUtils {
 	
+	/**
+	 * 任意の例外をスロー可能なConsumerです。
+	 * @param <P> パラメータの型
+	 * @param <T> スローされる例外の型
+	 */
 	@FunctionalInterface
 	public static interface ThrowableConsumer<P, T extends Throwable> {
 		
+		/**
+		 * 指定された引数でオペレーションを実行します。
+		 * @param param 引数
+		 * @throws T 実行中にスローされる(可能性のある)例外
+		 */
 		void accept(P param) throws T;
 		
 	}
 	
+	/**
+	 * DBへの接続に使用するドライバの名前
+	 */
 	private static final String DRIVER_NAME = "org.h2.Driver";
 	
+	/**
+	 * DBへアクセスするためのデータベースURL。
+	 * 一番最初の%sにはファイル名が入ります。
+	 */
 	private static final String DRIVER_URL = "jdbc:h2:file:%s";
 	
+	/**
+	 * このクラスはインスタンス化して使用しません。
+	 * @deprecated
+	 */
 	@Deprecated
 	private DBUtils() {}
 	
+	/**
+	 * DBへの接続を作成します。
+	 * @param dbname 接続するDBの名前
+	 * @return DBへの接続
+	 * @throws SQLException DBへの接続に失敗した場合
+	 * @throws IllegalStateException DBが初期化されていない場合
+	 */
 	public static Connection createConnection(String dbname) throws SQLException {
 		return createConnection(dbname, false);
 	}
 
-	private static Connection createConnection(String dbname, boolean createDB) throws SQLException {
+	/**
+	 * DBへの接続を作成します。
+	 * @param dbname 接続するDBの名前
+	 * @param createDB DBを作成するかどうか
+	 * @return DBへの接続
+	 * @throws SQLException DBへの接続に失敗した場合
+	 * @throws IllegalStateException (createDBがfalse)DBが初期化されていない場合、(createDBがtrue)DBが既に初期化されている場合
+	 */
+	private static Connection createConnection(String dbname, boolean createDB) throws SQLException, IllegalStateException {
 		try {
 			if (createDB) {
 				if (isDBCreated(dbname)) {
@@ -52,6 +93,11 @@ class DBUtils {
 		}
 	}
 
+	/**
+	 * DBが初期化されているかどうかを返します。
+	 * @param dbname データベース名
+	 * @return DBが初期化されているかどうか
+	 */
 	public static boolean isDBCreated(String dbname) {
 		return Files.exists(Path.of(dbname + ".mv.db"));
 	}
@@ -96,6 +142,18 @@ class DBUtils {
 		}
 	}
 
+	/**
+	 * statementのパラメータをparamsで埋めます。
+	 * 以下の型は、最適な方法で埋められます。それ以外はすべて{@link PreparedStatement#setObject(int, Object)}で埋められます。
+	 * <ul>
+	 *   <li>double</li>
+	 *   <li>int</li>
+	 *   <li>String</li>
+	 * </ul>
+	 * @param statement パラメータ付きSQL文
+	 * @param params パラメータ
+	 * @throws SQLException パラメータを埋めることに失敗した場合
+	 */
 	private static void prepareExecute(PreparedStatement statement, Object... params) throws SQLException {
 		int paramId = 1;
 		for (Object param : params) {

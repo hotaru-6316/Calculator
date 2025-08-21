@@ -33,6 +33,9 @@ final public class InputPanel extends AbstractPanel {
 	 */
 	final private InputTextField TEXT_FIELD = new InputTextField(this);
 	
+	/**
+	 * 履歴機能へアクセスするためのUIを提供するボタン
+	 */
 	final private HistoryButton HISTORY_BUTTON;
 
 	/**
