@@ -14,15 +14,15 @@ import java.util.Objects;
 class DBUtils {
 	
 	@FunctionalInterface
-	public static interface ThrowableRunnable<P, T extends Throwable> {
+	public static interface ThrowableConsumer<P, T extends Throwable> {
 		
-		void run(P param) throws T;
+		void accept(P param) throws T;
 		
 	}
 	
 	private static final String DRIVER_NAME = "org.h2.Driver";
 	
-	private static final String DRIVER_URL = "jdbc:h2:file:";
+	private static final String DRIVER_URL = "jdbc:h2:file:%s";
 	
 	@Deprecated
 	private DBUtils() {}
@@ -43,7 +43,7 @@ class DBUtils {
 				}
 			}
 			Class.forName(DRIVER_NAME);
-			Connection conn = DriverManager.getConnection(DRIVER_URL + dbname);
+			Connection conn = DriverManager.getConnection(DRIVER_URL.formatted(dbname));
 			return conn;
 		} catch (ClassNotFoundException e) {
 			Error error = new NoClassDefFoundError();
@@ -84,13 +84,13 @@ class DBUtils {
 	 * @throws SQLException SQL文の実行に失敗した場合
 	 */
 	public static void executeQuery(
-			ThrowableRunnable<? super ResultSet, ? extends SQLException> runnable,
+			ThrowableConsumer<? super ResultSet, ? extends SQLException> runnable,
 			Connection conn, String sql, Object... sqlParams) throws SQLException {
 		PreparedStatement statement = conn.prepareStatement(sql);
 		try {
 			prepareExecute(statement, sqlParams);
 			ResultSet set = statement.executeQuery();
-			runnable.run(set);
+			runnable.accept(set);
 		} finally {
 			statement.close();
 		}

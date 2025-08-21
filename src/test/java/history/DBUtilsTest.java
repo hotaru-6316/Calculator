@@ -52,7 +52,7 @@ class DBUtilsTest {
 	private static void createDB() {
 		try {
 			Class.forName(DRIVER_NAME);
-			try (Connection conn = DriverManager.getConnection(DRIVER_URL + DB)) {
+			try (Connection conn = DriverManager.getConnection(DRIVER_URL.formatted(DB))) {
 				conn.createStatement().execute(COLS);
 			}
 		} catch (SQLException | ClassNotFoundException e) {
