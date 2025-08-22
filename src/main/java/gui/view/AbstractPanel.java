@@ -28,11 +28,6 @@ abstract class AbstractPanel extends JPanel {
 	}
 	
 	/**
-	 * パネルの準備を行います。
-	 */
-	abstract void init();
-	
-	/**
 	 * このパネルを表示しているWindowFrameを返します。
 	 * @return このパネルを表示しているWindowFrame
 	 */

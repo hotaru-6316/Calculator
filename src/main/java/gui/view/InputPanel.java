@@ -8,14 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import annotation.InitMethodRequired;
-
 /**
- * 電卓ウィンドウのBorderLayout.NORTHに配置する入力等を表示するためのJPanelです。<br>
- * このクラスでは、コンストラクタの内部でCalcWindowFrameのgetter等を実行すると、nullが返る可能性があります。<br>
- * 詳しくは{@link CalcWindowFrame}を確認してください。
+ * 電卓ウィンドウのBorderLayout.NORTHに配置する入力等を表示するためのJPanelです。
  */
-@InitMethodRequired
 final public class InputPanel extends AbstractPanel {
 	
 	/**
@@ -26,12 +21,12 @@ final public class InputPanel extends AbstractPanel {
 	/**
 	 * 入力された数式を表示するためのラベル
 	 */
-	final private InputTextLabel TEXT_LABEL = new InputTextLabel();
+	final private InputTextLabel TEXT_LABEL;
 	
 	/**
 	 * 数式を入力するためのテキストフィールド
 	 */
-	final private InputTextField TEXT_FIELD = new InputTextField(this);
+	final private InputTextField TEXT_FIELD;
 	
 	/**
 	 * 履歴機能へアクセスするためのUIを提供するボタン
@@ -44,6 +39,8 @@ final public class InputPanel extends AbstractPanel {
 	 */
 	InputPanel(CalcWindowFrame windowFrame) {
 		super(windowFrame, PANEL_LAYOUT);
+		TEXT_LABEL = new InputTextLabel();
+		TEXT_FIELD = new InputTextField(this);
 		HISTORY_BUTTON = new HistoryButton(windowFrame, TEXT_FIELD);
 		JPanel labelPanel = new JPanel();
 		labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.X_AXIS));
@@ -51,12 +48,6 @@ final public class InputPanel extends AbstractPanel {
 		labelPanel.add(TEXT_LABEL);
 		this.add(labelPanel, BorderLayout.NORTH);
 		this.add(TEXT_FIELD, BorderLayout.SOUTH);
-	}
-
-	@Override
-	void init() {
-		TEXT_LABEL.init();
-		TEXT_FIELD.init();
 	}
 
 	/**

@@ -8,16 +8,12 @@ import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import annotation.InitMethodRequired;
 import parse.LogicFormulaParser;
 import parse.Parser;
 import parse.SimpleFormulaParser;
 
 /**
- * 電卓ウィンドウを構築して表示するためのJFrameです。<br>
- * このクラスが使用するInputPanel等のクラスはこのクラスの準備が整う前にコンストラクタが実行されるため、<br>
- * それらのクラスはコンストラクタではなく、init()メソッドでこのクラスのメソッドにアクセスしてください。<br>
- * 対象のクラスには{@link InitMethodRequired}注釈が使用されています。
+ * 電卓ウィンドウを構築して表示するためのJFrameです。
  */
 final public class CalcWindowFrame extends JFrame {
 
@@ -97,12 +93,12 @@ final public class CalcWindowFrame extends JFrame {
 	/**
 	 * このウィンドウに表示する入力パネル
 	 */
-	final private InputPanel INPUT_PANEL = new InputPanel(this);
+	final private InputPanel INPUT_PANEL;
 	
 	/**
 	 * このウィンドウに表示するボタンパネル
 	 */
-	final private ButtonPanel BUTTON_PANEL = new ButtonPanel(this);
+	final private ButtonPanel BUTTON_PANEL;
 	
 	/**
 	 * このウィンドウの電卓の動作モード
@@ -167,6 +163,8 @@ final public class CalcWindowFrame extends JFrame {
 		this.setTitle(calcMode.getTitle());
 		this.CALC_MODE = calcMode;
 		this.setLayout(FRAME_LAYOUT);
+		INPUT_PANEL = new InputPanel(this);
+		BUTTON_PANEL = new ButtonPanel(this);
 		this.add(INPUT_PANEL, BorderLayout.NORTH);
 		this.add(BUTTON_PANEL, BorderLayout.CENTER);
 		this.setSize(WINDOW_SIZE);
@@ -174,19 +172,7 @@ final public class CalcWindowFrame extends JFrame {
 		if (point != null) {
 			this.setLocation(point);
 		}
-		this.initPanel();
 		this.setVisible(true);
-	}
-	
-	/**
-	 * コンポーネントの準備を行います。<br>
-	 * WindowFrameの準備が終わった後、表示の直前で呼び出されるため、<br>
-	 * 各コンポーネントのinit()メソッド内では安全にWindowFrameのメソッドが呼び出せます。<br>
-	 * WindowFrameにアクセスする必要のある処理はこのメソッド内で行ってください。
-	 */
-	private void initPanel() {
-		BUTTON_PANEL.init();
-		INPUT_PANEL.init();
 	}
 
 	/**

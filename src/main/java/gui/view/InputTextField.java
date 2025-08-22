@@ -5,15 +5,11 @@ import java.awt.Insets;
 
 import javax.swing.JTextField;
 
-import annotation.InitMethodRequired;
 import gui.doc.InputTextFieldDocument;
 
 /**
- * InputPanelに「計算式入力フィールド」を表示するJTextFieldです。<br>
- * このクラスでは、コンストラクタの内部でCalcWindowFrameのgetter等を実行すると、nullが返る可能性があります。<br>
- * 詳しくは{@link CalcWindowFrame}を確認してください。
+ * InputPanelに「計算式入力フィールド」を表示するJTextFieldです。
  */
-@InitMethodRequired
 final public class InputTextField extends JTextField {
 	
 	/**
@@ -28,12 +24,6 @@ final public class InputTextField extends JTextField {
 	InputTextField(InputPanel panel) {
 		super();
 		this.PANEL = panel;
-	}
-	
-	/**
-	 * フィールドの準備を行います。
-	 */
-	void init() {
 		this.setHorizontalAlignment(RIGHT);
 		this.setDocument(new InputTextFieldDocument(PANEL));
 		Insets insets = this.getInsets();

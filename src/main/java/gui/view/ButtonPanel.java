@@ -6,15 +6,11 @@ import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import annotation.InitMethodRequired;
 import gui.view.btn.Button;
 
 /**
- * 電卓ウィンドウのBorderLayout.CENTERに配置するボタンを表示するためのJPanelです。<br>
- * このクラスでは、コンストラクタの内部でCalcWindowFrameのgetter等を実行すると、nullが返る可能性があります。<br>
- * 詳しくは{@link CalcWindowFrame}を確認してください。
+ * 電卓ウィンドウのBorderLayout.CENTERに配置するボタンを表示するためのJPanelです。
  */
-@InitMethodRequired
 final public class ButtonPanel extends AbstractPanel {
 	
 	/**
@@ -50,15 +46,6 @@ final public class ButtonPanel extends AbstractPanel {
 	ButtonPanel(CalcWindowFrame calcWindowFrame) {
 		super(calcWindowFrame, PANEL_LAYOUT);
 		this.setComponentOrientation(COMP_ORIENTATION);
-	}
-	
-	/**
-	 * パネルの準備を行います。<br>
-	 * このメソッドですべてのボタンの作成を行うため、{@link Button}やそれを継承するクラスは全てコンストラクタ内でCalcWindowFrameのgetter等にアクセスできます。
-	 * @see CalcWindowFrame#initPanel
-	 */
-	@Override
-	void init() {
 		for (int i = 0; i < BUTTON_TEXTS.length; i++) {
 			Button button = Button.getButton(BUTTON_TEXTS[i], this);
 			this.add(button);
