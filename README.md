@@ -22,8 +22,15 @@
   ※Windows以外の環境では正しく動作しない可能性があります。
 
 ### このアプリの使い方
-「Releases」から、zipファイルをダウンロード・展開し、中に入っている"Calculator.jar"をダブルクリックすると起動します。
-※Java実行環境(JRE)が必要です。
+「Releases」から、zipファイルをダウンロード・展開し、中に入っている"Calculator.jar"をダブルクリックすると起動します。<br>
+※Java実行環境(JRE)が必要です。<br>
+CUI電卓機能を使用する場合は、`java -jar Calculator.jar nogui`を"Calculator.jar"を保存したフォルダで実行します。
+<details>
+    <summary>スクリプトモードを使用するには</summary>
+
+  スクリプトモードを使用するには、CUI電卓機能の起動時にJVM引数`-D`を使用して、システムプロパティ`calc.CUICalculator.scriptMode`を`true`に設定する必要があります。<br>
+  詳細は[Javadoc](https://hotaru-6316.github.io/Calculator/calc/CUICalculator.html#scriptMode)を参照してください。
+</details>
 
 ### ビルド
   ※Eclipseを使用した手順です。他のIDEの場合は、下のMavenを使用した手順を参照してください。
