@@ -36,7 +36,8 @@ final class CUICalculator implements Calculator {
 	 * スクリプトや他のプログラムで実行する際に、答え以外の出力を行いません。<br>
 	 * 計算に成功した場合はSTDOUTに、計算結果のみ出力します。<br>
 	 * 失敗した場合は、STDOUTに<code>"ERROR"</code>、STDERRにエラーの情報を出力します。<br>
-	 * この機能はシステムプロパティ<code>calc.CUICalculator.scriptMode</code>が<code>true</code>である場合にのみ有効になります。
+	 * この機能はクラス読み込み時にシステムプロパティ<code>calc.CUICalculator.scriptMode</code>が<code>true</code>である場合にのみ有効になります。<br>
+	 * Javaから使用する場合は、スクリプトモードより{@link Parser#parseAndCalc(FormulaItem, Calculator)}を直接呼び出す方が便利です。
 	 */
 	private static boolean scriptMode = Boolean.getBoolean("calc.CUICalculator.scriptMode");
 
